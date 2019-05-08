@@ -104,39 +104,39 @@ import query from '../queries/fetchSongs';
 
 
 class SongCreate extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			title: ''
-		};
-	};
+    constructor(props) {
+        super(props);
+        this.state = {
+            title: ''
+        };
+    };
 
-	onSubmit(event) {
-		event.preventDefault();
-		/**
-		 * mutate is found on the props when you use graphql at the bottom to connect them
-		 * It has a variables key, which is what you use to set the variable in the graphql mutation
-		 * refetchQueries is an array that tells graphql which queries to rerun after a mutate has occurred. This will force a rerender
-		 */
-		this.props.mutate({
-			variables: { title: this.state.title },
-			refetchQueries: [{ query }]
-		}).then(() => hashHistory.push('/') );
-	}
+    onSubmit(event) {
+        event.preventDefault();
+        /**
+         * mutate is found on the props when you use graphql at the bottom to connect them
+         * It has a variables key, which is what you use to set the variable in the graphql mutation
+         * refetchQueries is an array that tells graphql which queries to rerun after a mutate has occurred. This will force a rerender
+         */
+        this.props.mutate({
+            variables: { title: this.state.title },
+            refetchQueries: [{ query }]
+        }).then(() => hashHistory.push('/') );
+    }
 
-	render() {
-		return (
-			<div>
-				<Link to="/">Back</Link>
-				<h3>Create a New Song</h3>
-				<form onSubmit={this.onSubmit.bind(this)}>
-					<label>Song Title:</label>
-					<input onChange={event => this.setState({ title: event.target.value })}
-					       value={this.state.title} />
-				</form>
-			</div>
-		)
-	}
+    render() {
+        return (
+            <div>
+                <Link to="/">Back</Link>
+                <h3>Create a New Song</h3>
+                <form onSubmit={this.onSubmit.bind(this)}>
+                    <label>Song Title:</label>
+                    <input onChange={event => this.setState({ title: event.target.value })}
+                           value={this.state.title} />
+                </form>
+            </div>
+        )
+    }
 }
 
 /**
@@ -146,11 +146,11 @@ class SongCreate extends Component {
  * then use the normal graphql mutation language within setting the key title to $title
  */
 const mutation = gql`
-	mutation AddSong($title: String) {
-		addSong(title: $title) {
-			title
-		}
-	}	
+    mutation AddSong($title: String) {
+        addSong(title: $title) {
+            title
+        }
+    }	
 `;
 /**
  * graphql here is used to "glue" our React component to the apollo client
@@ -172,8 +172,8 @@ export default graphql(mutation)(SongCreate);
         refetch the data, and update the component. You'll find this in the `SongList.js` file
         ```
         onSongDelete(id) {
-           		this.props.mutate({ variables: { id } })
-           			.then(() => this.props.data.refetch());
+            this.props.mutate({ variables: { id } })
+                .then(() => this.props.data.refetch());
         }
         ```
 - your choice depends on how you associate your queries with your components. 
@@ -204,3 +204,6 @@ export default graphql(mutation)(SongCreate);
         - **Also, we need to now ask for the id inside of each query that we make, including nested queries that have are expected responses from
         a mutation**
         - **Benefit** - this will cut down on your number of requests, due to the way that Apollo Client works
+**FINAL NOTE**
+In `LyricList.js` you'll see in the `this.props.mutate` the `optimisticResponse` parameter. This is a special function from the Apollo Client
+that allows you to update the front end with an expected response before you get the actual response back. 
